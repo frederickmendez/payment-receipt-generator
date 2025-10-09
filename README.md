@@ -33,7 +33,7 @@ This tool allows users to input details such as customer name, product name, and
 ## Contact
 - **Frederick Mendez**    
 - LinkedIn: [www.linkedin.com/in/frederickmendez](https://www.linkedin.com/in/frederickmendez)  
-- GitHub: [github.com/yourusername](https://github.com/frederickmendez) *(Replace with your actual GitHub username.)*
-
+- GitHub: [github.com/frederickmendez](https://github.com/frederickmendez)
+  
 ## Acknowledgments
 Inspired by beginner Python tutorials, including "How to Create a Payment Receipt Generator in Python" by NeuraNine (YouTube). This project is part of my portfolio for student jobs opportunities in Berlin, reflecting my passion for automation and tech innovation.
