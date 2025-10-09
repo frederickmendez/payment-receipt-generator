@@ -3,7 +3,7 @@
 A simple Python script to automate the creation of payment receipts, designed for beginners and applicable to ecommerce or IT support workflows. This project showcases basic programming skills and automation, aligning with my experience in IT support and digital marketing.
 
 ## Description
-This tool prompts users to input details such as customer name, product name, and payment amount, then generates a formatted text-based receipt displayed in the terminal, including a timestamp using Python’s `datetime` library. It’s a practical solution for simulating receipt generation in small-scale ecommerce or dropshipping operations, reducing manual errors—a skill I honed during my IT support roles. The project can be extended with file output or database integration for future enhancements.
+This tool prompts users to input details such as customer name, product name, and payment amount, then generates a formatted text-based receipt displayed in the terminal, including a timestamp using Python’s `datetime` library. It’s a practical solution for simulating receipt generation in small-scale ecommerce or dropshipping operations, reducing manual errors. The project can be extended with file output or database integration for future enhancements.
 
 ## Technologies Used
 - **Python 3**: Core language for script development.
