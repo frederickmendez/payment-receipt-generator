@@ -1,8 +1,8 @@
-# Frederick — Receipt Studio
+# Tally — Receipt Studio
 
 > A small web app that turns a basic Python script into a receipt tool a small business could actually use.
 
-![Frederick — Overview](screenshots/01-overview.jpg)
+![Tally — Overview](screenshots/01-overview.jpg)
 
 ---
 
@@ -10,7 +10,7 @@
 
 The original project (`main.py`) was a 70-line Python tutorial that printed a receipt to the terminal. It ran, but no real person could use it — every change meant editing the source code, there was no preview, and there was no way to actually print anything.
 
-**Frederick — Receipt Studio** is the same idea rebuilt as a working tool: a two-pane web app where you fill in the basket on the left, watch the receipt build itself on the right, and click **Print** when you're done.
+**Tally — Receipt Studio** is the same idea rebuilt as a working tool: a two-pane web app where you fill in the basket on the left, watch the receipt build itself on the right, and click **Print** when you're done.
 
 ---
 
@@ -42,7 +42,7 @@ There's a gap in the middle: people who need a clean printed receipt and nothing
 
 A small business writing 60 manual receipts a day spends about 90 seconds on each one: tally the items, do the math, double-check, hand it over. With this tool that drops to roughly 15 seconds.
 
-| Metric | Manual (pen + calculator) | Frederick |
+| Metric | Manual (pen + calculator) | Tally |
 |---|---|---|
 | Time per receipt | ~90 sec | ~15 sec |
 | Math errors | ~1 in every 25 receipts | 0 — totals are computed |
@@ -105,7 +105,7 @@ The Flask app exposes one HTTP endpoint plus the page itself.
     { "name": "Espresso",         "price": 3.50, "qty": 2 },
     { "name": "Almond croissant", "price": 4.20, "qty": 1 }
   ],
-  "tax_rate": 0.18
+  "tax_rate": 0.0825
 }
 ```
 
@@ -120,9 +120,9 @@ The Flask app exposes one HTTP endpoint plus the page itself.
   ],
   "currency":    "$",
   "sub_total":   11.20,
-  "tax":         2.02,
-  "tax_rate":    0.18,
-  "grand_total": 13.22,
+  "tax":         0.92,
+  "tax_rate":    0.0825,
+  "grand_total": 12.12,
   "item_count":  3,
   "date":        "25/04/2026",
   "time":        "14:52:07"
@@ -162,11 +162,11 @@ The app boots with a sample basket. Edit anything on the left, watch the receipt
 
 ## Before and after
 
-| | v1 (original tutorial) | v2 (**Frederick**) |
+| | v1 (original tutorial) | v2 (**Tally**) |
 |---|---|---|
 | Interface | Terminal `print()` output | Web UI with live preview |
-| Currency | USD only | Configurable (defaults to RD$) |
-| Tax | Hard-coded at 6% | Configurable, default 18% |
+| Currency | USD only | Configurable (defaults to `$`) |
+| Tax | Hard-coded at 6% | Configurable, default 8.25% |
 | Editing | Edit the source file | Editable in the browser |
 | Output | Console text | Styled HTML receipt + Print button |
 | Persistence | None | Auto-saves to `localStorage` |

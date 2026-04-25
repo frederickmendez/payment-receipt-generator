@@ -3,28 +3,28 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-APP_NAME = "Frederick"
-APP_TAGLINE = "Recibos con estilo, en un solo clic."
-CURRENCY = "RD$"
+APP_NAME = "Tally"
+APP_TAGLINE = "Receipts that look the part."
+CURRENCY = "$"
 
 DEFAULT_STORE = {
-    "name": "Mercado Frederick",
-    "street": "Av. Winston Churchill 25, Santo Domingo",
-    "phone": "+1 (809) 555-1234",
-    "cashier": "María Hernández",
+    "name": "Northgate Market",
+    "street": "12 Market Street, Brooklyn, NY 11201",
+    "phone": "(718) 555-0142",
+    "cashier": "Sam Walker",
 }
 
 DEFAULT_PRODUCTS = [
-    {"name": "Plátanos verdes (3)",     "price":  60.00, "qty": 1},
-    {"name": "Salami Induveca 1lb",     "price": 295.00, "qty": 1},
-    {"name": "Café Santo Domingo 1lb",  "price": 420.00, "qty": 1},
-    {"name": "Habichuelas rojas 1lb",   "price":  95.00, "qty": 2},
-    {"name": "Arroz Selecto 5lb",       "price": 365.00, "qty": 1},
-    {"name": "Queso de freír 1lb",      "price": 280.00, "qty": 1},
-    {"name": "Aguacate criollo",        "price": 120.00, "qty": 1},
+    {"name": "Sourdough loaf",          "price": 4.50, "qty": 1},
+    {"name": "Whole milk 1 gal",        "price": 5.20, "qty": 1},
+    {"name": "Free-range eggs (12)",    "price": 5.80, "qty": 1},
+    {"name": "Cheddar cheese 8oz",      "price": 6.40, "qty": 1},
+    {"name": "Avocados",                "price": 1.80, "qty": 3},
+    {"name": "Ground coffee 12oz",      "price": 9.90, "qty": 1},
+    {"name": "Olive oil 16oz",          "price": 7.50, "qty": 1},
 ]
 
-TAX_RATE = 0.18  # ITBIS
+TAX_RATE = 0.0825  # Sales tax
 
 
 @app.route("/")

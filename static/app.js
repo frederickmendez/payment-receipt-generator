@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'frederick.receipt.v2';
+  const STORAGE_KEY = 'tally.receipt.v1';
 
   const itemsEl   = document.getElementById('items');
   const emptyHint = document.getElementById('emptyHint');
@@ -199,7 +199,7 @@
     if (!renderedAny) {
       const empty = document.createElement('div');
       empty.className = 'r-empty';
-      empty.textContent = '— sin artículos —';
+      empty.textContent = '— no items —';
       rItems.appendChild(empty);
     }
 

@@ -12,7 +12,7 @@
 <body>
   <header class="app-header">
     <div class="brand">
-      <div class="logo" aria-hidden="true">F</div>
+      <div class="logo" aria-hidden="true">T</div>
       <div class="brand-text">
         <h1>{{ app_name }}</h1>
         <p>{{ app_tagline }}</p>
@@ -58,7 +58,7 @@
           <input type="text" id="store_phone" value="{{ store.phone }}" />
         </label>
         <label class="field">
-          <span>ITBIS rate (%)</span>
+          <span>Tax rate (%)</span>
           <input type="number" id="tax_rate" min="0" max="100" step="0.01" value="{{ '%.2f'|format(tax_rate * 100) }}" />
         </label>
       </div>
@@ -89,7 +89,7 @@
 
       <div class="totals-card">
         <div class="row"><span>Subtotal</span><b id="sumSub">{{ currency }}0.00</b></div>
-        <div class="row"><span>ITBIS <span id="sumVatPct" class="pill">18%</span></span><b id="sumTax">{{ currency }}0.00</b></div>
+        <div class="row"><span>Tax <span id="sumVatPct" class="pill">8.25%</span></span><b id="sumTax">{{ currency }}0.00</b></div>
         <div class="row total"><span>Grand total</span><b id="sumGrand">{{ currency }}0.00</b></div>
         <div class="row sub"><span>Items</span><b id="sumCount">0</b></div>
       </div>
@@ -100,7 +100,7 @@
       <div class="receipt-wrap">
         <div class="receipt" id="receipt">
           <div class="r-top">
-            <div class="r-brandmark">F</div>
+            <div class="r-brandmark">T</div>
             <div class="r-store" id="rStore">{{ store.name }}</div>
             <div class="r-line" id="rStreet">{{ store.street }}</div>
             <div class="r-line" id="rPhone">{{ store.phone }}</div>
@@ -109,7 +109,7 @@
           <div class="r-divider"></div>
 
           <div class="r-meta">
-            <div><span class="r-key">Cajero:</span> <span id="rCashier">{{ store.cashier }}</span></div>
+            <div><span class="r-key">Cashier:</span> <span id="rCashier">{{ store.cashier }}</span></div>
             <div class="r-meta-row">
               <span id="rDate"></span>
               <span id="rTime"></span>
@@ -118,26 +118,26 @@
 
           <div class="r-divider"></div>
 
-          <div class="r-section-title">ARTÍCULOS</div>
+          <div class="r-section-title">ITEMS</div>
           <div class="r-items" id="rItems"></div>
 
           <div class="r-divider"></div>
 
           <div class="r-totals">
             <div class="r-row"><span>Subtotal</span><span id="rSub">{{ currency }}0.00</span></div>
-            <div class="r-row"><span>ITBIS @ <span id="rTaxPct">18%</span></span><span id="rTax">{{ currency }}0.00</span></div>
+            <div class="r-row"><span>Tax @ <span id="rTaxPct">8.25%</span></span><span id="rTax">{{ currency }}0.00</span></div>
             <div class="r-row r-grand"><span>TOTAL</span><span id="rGrand">{{ currency }}0.00</span></div>
           </div>
 
           <div class="r-divider"></div>
 
           <div class="r-row r-itemsold">
-            <span>TOTAL DE ARTÍCULOS</span><span id="rCount">0</span>
+            <span>ITEMS PURCHASED</span><span id="rCount">0</span>
           </div>
 
           <div class="r-footer">
-            <p>Devoluciones aceptadas dentro de 14 días con este recibo.</p>
-            <p class="r-thanks">¡Gracias por su compra!</p>
+            <p>Returns accepted within 14 days with this receipt.</p>
+            <p class="r-thanks">Thanks for stopping by!</p>
           </div>
 
           <div class="r-barcode" aria-hidden="true"></div>
