@@ -1,0 +1,45 @@
+# ───── Python ─────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# ───── Virtual environments ─────
+.venv/
+venv/
+env/
+ENV/
+
+# ───── Poetry ─────
+poetry.lock
+
+# ───── Editors / OS ─────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ───── Flask / Logs ─────
+*.log
+instance/
+.webassets-cache
+.flaskenv
+
+# ───── Replit (keep .replit & replit.md out of GitHub if you prefer) ─────
+# Uncomment the next two lines if you don't want Replit config in your repo.
+# .replit
+# replit.md
+.cache/
+.upm/
+.local/
+.agents/
+.pythonlibs/
+.config/

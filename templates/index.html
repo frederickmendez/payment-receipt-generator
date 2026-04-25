@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ app_name }} — Receipt Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">F</div>
+      <div class="brand-text">
+        <h1>{{ app_name }}</h1>
+        <p>{{ app_tagline }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="resetBtn" class="btn btn-ghost" title="Reset to defaults">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Reset
+      </button>
+      <button id="printBtn" class="btn btn-primary" title="Print receipt">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print receipt
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT: editor -->
+    <section class="panel form-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Store details</h2>
+          <span class="hint">Everything is editable. The receipt updates as you type.</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <label class="field">
+          <span>Store name</span>
+          <input type="text" id="store_name" value="{{ store.name }}" />
+        </label>
+        <label class="field">
+          <span>Cashier</span>
+          <input type="text" id="store_cashier" value="{{ store.cashier }}" />
+        </label>
+        <label class="field field-wide">
+          <span>Address</span>
+          <input type="text" id="store_street" value="{{ store.street }}" />
+        </label>
+        <label class="field">
+          <span>Phone</span>
+          <input type="text" id="store_phone" value="{{ store.phone }}" />
+        </label>
+        <label class="field">
+          <span>ITBIS rate (%)</span>
+          <input type="number" id="tax_rate" min="0" max="100" step="0.01" value="{{ '%.2f'|format(tax_rate * 100) }}" />
+        </label>
+      </div>
+
+      <div class="panel-head" style="margin-top: 28px;">
+        <div>
+          <h2>Items</h2>
+          <span class="hint">Press <kbd>Enter</kbd> on the last item to add another row.</span>
+        </div>
+        <button id="addItemBtn" class="btn btn-primary btn-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add item
+        </button>
+      </div>
+
+      <div class="items-header">
+        <span>Product</span>
+        <span class="num">Qty</span>
+        <span class="num">Price ({{ currency }})</span>
+        <span></span>
+      </div>
+
+      <div id="items"></div>
+
+      <div id="emptyHint" class="empty-hint" hidden>
+        Your basket is empty — add an item to start building a receipt.
+      </div>
+
+      <div class="totals-card">
+        <div class="row"><span>Subtotal</span><b id="sumSub">{{ currency }}0.00</b></div>
+        <div class="row"><span>ITBIS <span id="sumVatPct" class="pill">18%</span></span><b id="sumTax">{{ currency }}0.00</b></div>
+        <div class="row total"><span>Grand total</span><b id="sumGrand">{{ currency }}0.00</b></div>
+        <div class="row sub"><span>Items</span><b id="sumCount">0</b></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: receipt preview -->
+    <section class="panel preview-panel">
+      <div class="receipt-wrap">
+        <div class="receipt" id="receipt">
+          <div class="r-top">
+            <div class="r-brandmark">F</div>
+            <div class="r-store" id="rStore">{{ store.name }}</div>
+            <div class="r-line" id="rStreet">{{ store.street }}</div>
+            <div class="r-line" id="rPhone">{{ store.phone }}</div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <div class="r-meta">
+            <div><span class="r-key">Cajero:</span> <span id="rCashier">{{ store.cashier }}</span></div>
+            <div class="r-meta-row">
+              <span id="rDate"></span>
+              <span id="rTime"></span>
+            </div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <div class="r-section-title">ARTÍCULOS</div>
+          <div class="r-items" id="rItems"></div>
+
+          <div class="r-divider"></div>
+
+          <div class="r-totals">
+            <div class="r-row"><span>Subtotal</span><span id="rSub">{{ currency }}0.00</span></div>
+            <div class="r-row"><span>ITBIS @ <span id="rTaxPct">18%</span></span><span id="rTax">{{ currency }}0.00</span></div>
+            <div class="r-row r-grand"><span>TOTAL</span><span id="rGrand">{{ currency }}0.00</span></div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <div class="r-row r-itemsold">
+            <span>TOTAL DE ARTÍCULOS</span><span id="rCount">0</span>
+          </div>
+
+          <div class="r-footer">
+            <p>Devoluciones aceptadas dentro de 14 días con este recibo.</p>
+            <p class="r-thanks">¡Gracias por su compra!</p>
+          </div>
+
+          <div class="r-barcode" aria-hidden="true"></div>
+          <div class="r-barcode-num" id="rBarcodeNum"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>© {{ app_name }} Receipt Studio</span>
+    <span class="dot">•</span>
+    <span>Built with Python, Flask & a little craftsmanship</span>
+  </footer>
+
+  <script>
+    window.initialProducts = {{ products|tojson }};
+    window.initialTaxRate  = {{ tax_rate }};
+    window.initialStore    = {{ store|tojson }};
+    window.currencySymbol  = {{ currency|tojson }};
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

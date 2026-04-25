@@ -2,10 +2,10 @@
 import datetime
 
 # Store Information
-store_name = "Supermarket Gustavo"
-store_street = "Miami, FL 31502"
-store_phone_number = "(305)555-1234"
-cashier_name = "Gustavo Rodriguez"
+store_name = "super grocery mart"
+store_street = "Orlando, FL 32803"
+store_phone_number = "(407)555-1234"
+cashier_name = "Jane Smith"
 
 now = datetime.datetime.now()
 date_time = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -30,7 +30,7 @@ grand_total = sub_total + food_tax
 
 # Message
 return_message = "No returns on meat, product, milk products."
-appreciation_message = "Thank you for preferring us !!"
+appreciation_message = "Thank you for your business !!"
 
 print("*" * 49)
 print(f"\t\t\t\t{store_name.title()}")
