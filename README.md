@@ -1,56 +1,63 @@
 # Frederick — Receipt Studio
 
-> A small case study in turning a 70-line Python tutorial into something a real shop could plug into a tablet tomorrow.
+> A small web app that turns a basic Python script into a receipt tool a small business could actually use.
 
 ![Frederick — Overview](screenshots/01-overview.jpg)
 
 ---
 
+## What this is
+
+The original project (`main.py`) was a 70-line Python tutorial that printed a receipt to the terminal. It ran, but no real person could use it — every change meant editing the source code, there was no preview, and there was no way to actually print anything.
+
+**Frederick — Receipt Studio** is the same idea rebuilt as a working tool: a two-pane web app where you fill in the basket on the left, watch the receipt build itself on the right, and click **Print** when you're done.
+
+---
+
 ## The problem
 
-Walk into a colmado in Santo Domingo at 7pm on a Tuesday. The cashier is calculating change on a phone, writing prices on the back of an older receipt because the printer roll ran out, and a kid is waiting on a bag of plátanos. The "POS" is a spiral notebook. The math is mostly correct, *mostly*.
+Small businesses — independent shops, food stalls, freelancers, weekend markets — all need the same thing at the end of a sale: a clear, itemised receipt. Their options today are usually:
 
-I started this project from a beginner Python tutorial — a 70-line script that printed a receipt to the terminal. It "worked" the way a homework assignment works: it ran, it printed text, and it was completely useless to anyone except me. Every change meant editing the source. There was no preview. There was no way to actually print. The output was a wall of `print()` statements with no styling.
+1. **A full POS system** (Square, Lightspeed, Toast). Expensive, overkill, requires hardware.
+2. **Pen and paper.** Slow, error-prone, no record of what was sold.
+3. **A spreadsheet template.** Editable, but ugly and not designed for printing.
 
-So I rebuilt it. **v2 is the version a corner store could actually use.**
-
----
-
-## The solution
-
-**Frederick — Receipt Studio** is the same idea, made usable:
-
-- A two-pane web UI: edit the basket on the left, watch the receipt build itself on the right
-- One click to print — and only the receipt prints, not the form around it
-- The receipt looks like a real thermal-printer slip: torn paper edges, monospace body, dashed dividers, brand mark, barcode, reference number
-- Saves to the browser as you type, so an accidental refresh doesn't wipe your work
-- Press <kbd>Enter</kbd> on the last item to add another row — keyboard-first, like cashiers actually work
-- Spanish-language defaults, RD$ peso, ITBIS at 18% — built for a real shop, not a tutorial demo
-
-It's still a small project. But it's the difference between *"I followed a tutorial"* and *"I shipped a tool a colmado could open on a tablet today."*
+There's a gap in the middle: people who need a clean printed receipt and nothing more. That's the problem this project addresses.
 
 ---
 
-## ROI — what this actually saves
+## What it does
 
-Imagine a shop that writes 60 receipts a day by hand. Each one takes about 90 seconds (tally, math, double-check, hand it over). Here's what changes:
+- A **two-pane editor and live preview** — every change is reflected on the receipt instantly
+- Editable store details, cashier name, tax rate, and any number of line items
+- Receipt designed to look like real thermal-printer paper: torn edges, monospace body, dashed dividers, brand mark, barcode, reference number
+- One-click **Print**, with CSS that hides the editor so only the receipt is sent to the printer
+- Auto-saves to the browser — an accidental refresh doesn't wipe the basket
+- Press <kbd>Enter</kbd> on the last item to add another row
+- A **Reset** button restores the sample data
 
-| Metric | Pen + paper | Frederick |
+---
+
+## Return on investment
+
+A small business writing 60 manual receipts a day spends about 90 seconds on each one: tally the items, do the math, double-check, hand it over. With this tool that drops to roughly 15 seconds.
+
+| Metric | Manual (pen + calculator) | Frederick |
 |---|---|---|
 | Time per receipt | ~90 sec | ~15 sec |
-| Math errors | ~1 in 25 receipts | 0 — totals are computed |
+| Math errors | ~1 in every 25 receipts | 0 — totals are computed |
 | Reprint a lost receipt | impossible | one click |
-| Hardware required | calculator, pen, notepad | any browser |
-| Setup cost | 0 | 0 (open source, runs on a laptop) |
-| Cashier onboarding | "watch me do it" | the form *is* the documentation |
+| Hardware required | calculator, pen, notepad | a browser |
+| Setup cost | 0 | 0 (open source) |
+| Onboarding time | "watch me do it" | none — the form is self-explanatory |
 
-That's roughly **75 seconds saved per receipt**, or **~75 minutes a day** for one cashier. Across 26 working days, that's **~32 hours a month** the cashier gets back to actually serving customers — call it one extra shift's worth of attention every month, for free.
+That's about **75 seconds saved per receipt**, or **75 minutes per cashier per day**. Across a working month (~26 days), that's roughly **32 hours back** — close to a full extra workweek the cashier can spend on customers instead of arithmetic.
 
-This isn't trying to replace Square or a real POS. There's no payment processing, no inventory, no taxes filed for you. But for the 80% of small Latin American shops that just need a clean printed slip at the end of a sale, this is a Tuesday-afternoon upgrade.
+This isn't trying to replace a real POS. There's no payment processing, no inventory tracking, no tax filing. It does the receipt half of the problem, and it does it well.
 
 ---
 
-## How it works — architecture
+## Architecture
 
 ```
 ┌──────────────────────┐         POST /api/receipt        ┌──────────────────────┐
@@ -58,45 +65,45 @@ This isn't trying to replace Square or a real POS. There's no payment processing
 │   (vanilla JS)       │           JSON body              │                      │
 │                      │                                  │  • validates input   │
 │   • live preview     │ ◀─────────────────────────────── │  • computes subtotal │
-│   • localStorage     │       JSON: totals, items,       │  • computes ITBIS    │
-│   • print-only CSS   │       ITBIS, timestamp           │  • timestamps it     │
+│   • localStorage     │       JSON: totals, items,       │  • computes tax      │
+│   • print-only CSS   │       timestamp                  │  • timestamps it     │
 └──────────────────────┘                                  └──────────────────────┘
         │                                                          │
         │ GET /                                                    │
-        └──────────────────────────────────────────▶  Jinja2 renders index.html
-                                                       with sample DR basket
+        └───────────────────────────────────────▶  Jinja2 renders index.html
+                                                   with a sample basket
 ```
 
-The frontend computes totals locally so the preview feels instant — no network round-trip on every keystroke. The same math is mirrored server-side in `/api/receipt`, which is what you'd integrate against if you ever wanted to log receipts to a database, generate PDFs, or wire this into a real POS.
+The frontend computes totals locally so the preview feels instant — no network round-trip on every keystroke. The same math is mirrored on the backend in `/api/receipt`. That's the integration point if you ever want to log receipts to a database, generate PDFs, or wire this into another system.
 
-The whole app is intentionally tiny: one Python file, one HTML template, one CSS file, one JS file. A recruiter can read the entire source in under ten minutes.
+The whole app is small on purpose: one Python file, one HTML template, one CSS file, one JavaScript file. The full source can be read in about ten minutes.
 
 ---
 
-## API reference
+## API
 
 The Flask app exposes one HTTP endpoint plus the page itself.
 
 | Method | Path | Body | Returns |
 |---|---|---|---|
-| `GET` | `/` | — | The HTML page, Jinja-rendered with the sample basket |
+| `GET` | `/` | — | The HTML page, server-rendered with a sample basket |
 | `POST` | `/api/receipt` | `{ store, products, tax_rate }` | The receipt as JSON, with totals computed |
 
 ### `POST /api/receipt`
 
-**Request body:**
+**Request:**
 
 ```json
 {
   "store": {
-    "name": "Mercado Frederick",
-    "street": "Av. Winston Churchill 25, Santo Domingo",
-    "phone": "+1 (809) 555-1234",
-    "cashier": "María Hernández"
+    "name":    "Acme Coffee",
+    "street":  "12 Market Street",
+    "phone":   "+1 555 0100",
+    "cashier": "Alex"
   },
   "products": [
-    { "name": "Plátanos verdes (3)", "price": 60.00, "qty": 1 },
-    { "name": "Café Santo Domingo 1lb", "price": 420.00, "qty": 1 }
+    { "name": "Espresso",         "price": 3.50, "qty": 2 },
+    { "name": "Almond croissant", "price": 4.20, "qty": 1 }
   ],
   "tax_rate": 0.18
 }
@@ -108,34 +115,34 @@ The Flask app exposes one HTTP endpoint plus the page itself.
 {
   "store": { "...": "echoed back" },
   "products": [
-    { "name": "Plátanos verdes (3)", "price": 60.0, "qty": 1, "line_total": 60.0 },
-    { "name": "Café Santo Domingo 1lb", "price": 420.0, "qty": 1, "line_total": 420.0 }
+    { "name": "Espresso",         "price": 3.5, "qty": 2, "line_total": 7.0 },
+    { "name": "Almond croissant", "price": 4.2, "qty": 1, "line_total": 4.2 }
   ],
-  "currency": "RD$",
-  "sub_total": 480.0,
-  "itbis": 86.40,
-  "tax_rate": 0.18,
-  "grand_total": 566.40,
-  "item_count": 2,
-  "date": "25/04/2026",
-  "time": "14:52:07"
+  "currency":    "$",
+  "sub_total":   11.20,
+  "tax":         2.02,
+  "tax_rate":    0.18,
+  "grand_total": 13.22,
+  "item_count":  3,
+  "date":        "25/04/2026",
+  "time":        "14:52:07"
 }
 ```
 
-The endpoint silently drops items with empty names or non-numeric prices — that way a half-filled form on the frontend never crashes a request.
+The currency symbol comes from a single `CURRENCY` constant in `app.py` — change it once and the whole app updates. The endpoint silently drops items with empty names or non-numeric prices, so a half-filled form on the frontend can't crash a request.
 
 ---
 
-## Stack & a few opinions
+## Stack and a few decisions
 
-- **Python 3.11 + Flask 3** — fits in one file, no boilerplate, ships fast
-- **Jinja2** for the initial render — the server hands the browser a working page, then the JS takes over
+- **Python 3.11 + Flask 3** — small, no boilerplate, fits in one file
+- **Jinja2** for the initial render — the server hands the browser a working page, then the JavaScript takes over
 - **Vanilla JavaScript** — no build step, no `node_modules`. Clone, install, run.
-- **Custom CSS** — a real design system (navy + warm gold, *Fraunces* for headings, *JetBrains Mono* for the receipt body). No Tailwind, no component library.
-- **`localStorage`** for persistence — refresh doesn't punish the user
-- **`@media print` CSS** — when you hit print, the editor disappears and only the receipt goes to the printer
+- **Custom CSS** — a simple design system (navy + warm gold, *Fraunces* for headings, *JetBrains Mono* for the receipt body). No Tailwind, no component library.
+- **`localStorage`** for persistence — a refresh doesn't punish the user
+- **`@media print`** — when you hit print, the editor is hidden and only the receipt goes to the printer
 
-I deliberately stayed framework-free on the frontend. The point of v2 was to show I can ship a polished, usable interface without reaching for React for a 200-line app. Pulling in a framework would have been faster to *write* and slower to *read* — and I'd rather a recruiter scan this in ten minutes than need to know my router.
+I deliberately kept the frontend framework-free. For a 200-line app, a framework would have been faster to write and slower to read. The point of this project was to ship something readable end-to-end, not to demonstrate a stack.
 
 ---
 
@@ -149,35 +156,36 @@ python app.py
 # → http://localhost:5000
 ```
 
-That's it. The app boots with a sample Dominican grocery basket — edit anything on the left, watch the receipt update on the right, and hit **Print receipt** when you're done.
+The app boots with a sample basket. Edit anything on the left, watch the receipt update on the right, hit **Print receipt** when you're done.
 
 ---
 
-## Before / after
+## Before and after
 
-| | v1 — original tutorial | v2 — **Frederick** |
+| | v1 (original tutorial) | v2 (**Frederick**) |
 |---|---|---|
-| Interface | Terminal `print()` | Web UI with live preview |
-| Currency | USD ($) | RD$ (Dominican Peso) |
-| Tax | Hard-coded 6% food tax | Configurable ITBIS (default 18%) |
+| Interface | Terminal `print()` output | Web UI with live preview |
+| Currency | USD only | Configurable (defaults to RD$) |
+| Tax | Hard-coded at 6% | Configurable, default 18% |
 | Editing | Edit the source file | Editable in the browser |
 | Output | Console text | Styled HTML receipt + Print button |
 | Persistence | None | Auto-saves to `localStorage` |
-| Stack | Pure Python | Python + Flask + HTML/CSS/JS |
+| Stack | Pure Python | Python + Flask + HTML / CSS / JS |
 | Lines of code | ~70 | ~600 across 4 files |
-| Could a non-coder use it? | No | Yes |
+| Could a non-developer use it? | No | Yes |
 
-The original `main.py` is still in the repo as the v1 reference. Nothing was thrown away — v2 stands on top of it.
+`main.py` is still in the repo as the v1 reference. Nothing was discarded — v2 builds on top of it.
 
 ---
 
 ## What's next
 
-- Export receipts to **PDF** (`weasyprint`) so they can be emailed to customers
+- Export receipts as **PDF** so they can be emailed to customers
 - Log every receipt to **SQLite** so a shop can pull a daily totals report
-- A multi-currency selector (USD, EUR, COP) for shops near tourist zones
-- A small login so two cashiers can share the same browser without overwriting each other
-- A `Dockerfile` so it ships as one `docker run` command
+- Multi-currency selector (USD, EUR, GBP) for cross-border use
+- A small login so multiple cashiers can share the same browser without overwriting each other
+- A `Dockerfile` so the app ships as a single `docker run` command
+- Unit tests for the totals calculation in `app.py`
 
 ---
 
@@ -189,4 +197,4 @@ The original `main.py` is still in the repo as the v1 reference. Nothing was thr
 
 ---
 
-*Built as a portfolio piece for working student opportunities in Berlin. The original v1 was inspired by the "How to Create a Payment Receipt Generator in Python" tutorial by NeuralNine on YouTube — gracias por la chispa inicial.*
+*Built as a portfolio project for working student opportunities in Berlin.*

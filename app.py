@@ -67,8 +67,8 @@ def build_receipt():
         })
 
     sub_total = round(sum(p["line_total"] for p in cleaned), 2)
-    itbis = round(sub_total * tax_rate, 2)
-    grand_total = round(sub_total + itbis, 2)
+    tax = round(sub_total * tax_rate, 2)
+    grand_total = round(sub_total + tax, 2)
     item_count = sum(p["qty"] for p in cleaned)
 
     now = datetime.datetime.now()
@@ -77,7 +77,7 @@ def build_receipt():
         "products": cleaned,
         "currency": CURRENCY,
         "sub_total": sub_total,
-        "itbis": itbis,
+        "tax": tax,
         "tax_rate": tax_rate,
         "grand_total": grand_total,
         "item_count": item_count,
