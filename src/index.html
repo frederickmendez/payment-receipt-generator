@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tally — Receipt Studio Pro</title>
+  <meta name="description" content="Free receipt generator for small businesses. Create, preview, and print professional receipts instantly — no signup, no backend." />
+  <meta property="og:title" content="Tally — Receipt Studio Pro" />
+  <meta property="og:description" content="Create professional receipts in seconds. Free, fast, no signup." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header" id="appHeader">
+    <div class="brand">
+      <div class="logo" id="logoMark">T</div>
+      <div class="brand-text">
+        <h1>Tally</h1>
+        <p>Receipt Studio Pro</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="historyBtn" title="Receipt History">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        History
+      </button>
+      <button class="btn btn-ghost btn-sm" id="resetBtn" title="Reset to sample data">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Reset
+      </button>
+      <button class="btn btn-primary btn-sm" id="printBtn" title="Print receipt (Ctrl+P)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print
+      </button>
+      <button class="btn btn-accent btn-sm" id="exportPdfBtn" title="Export as PDF">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== MAIN LAYOUT ========== -->
+  <main class="layout" id="mainLayout">
+
+    <!-- ===== EDITOR PANEL ===== -->
+    <section class="panel form-panel glass" id="editorPanel">
+
+      <!-- Store Details -->
+      <div class="panel-section">
+        <div class="panel-head">
+          <h2>Store Details</h2>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <span>Store Name</span>
+            <input type="text" id="store_name" value="Northgate Market" />
+          </div>
+          <div class="field">
+            <span>Cashier</span>
+            <input type="text" id="store_cashier" value="Sam Walker" />
+          </div>
+          <div class="field field-wide">
+            <span>Address</span>
+            <input type="text" id="store_street" value="12 Market Street, Brooklyn, NY 11201" />
+          </div>
+          <div class="field">
+            <span>Phone</span>
+            <input type="text" id="store_phone" value="(718) 555-0142" />
+          </div>
+          <div class="field">
+            <span>Currency</span>
+            <select id="currencySelect">
+              <option value="$" selected>USD ($)</option>
+              <option value="€">EUR (€)</option>
+              <option value="£">GBP (£)</option>
+              <option value="RD$">DOP (RD$)</option>
+              <option value="¥">JPY (¥)</option>
+              <option value="₹">INR (₹)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="panel-section">
+        <div class="panel-head">
+          <h2>Items</h2>
+          <button class="btn btn-ghost btn-sm" id="addItemBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add item
+          </button>
+        </div>
+        <div class="items-header">
+          <span>Item</span>
+          <span class="num">Qty</span>
+          <span class="num">Price</span>
+          <span></span>
+        </div>
+        <div id="items"></div>
+        <div class="empty-hint" id="emptyHint" hidden>
+          No items yet. Click <strong>Add item</strong> or press <kbd>Enter</kbd> on the last row.
+        </div>
+      </div>
+
+      <!-- Tax -->
+      <div class="panel-section">
+        <div class="grid-2">
+          <div class="field">
+            <span>Tax Rate (%)</span>
+            <input type="number" id="tax_rate" value="8.25" min="0" step="0.01" />
+          </div>
+          <div class="field">
+            <span>Receipt Template</span>
+            <select id="templateSelect">
+              <option value="classic" selected>Classic Paper</option>
+              <option value="minimal">Minimal</option>
+              <option value="dark">Dark Mode</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Totals Card -->
+      <div class="totals-card" id="totalsCard">
+        <div class="row">
+          <span>Subtotal</span>
+          <b id="sumSub">$0.00</b>
+        </div>
+        <div class="row">
+          <span>Tax <span class="pill" id="sumVatPct">8.25%</span></span>
+          <b id="sumTax">$0.00</b>
+        </div>
+        <div class="row total">
+          <span>Total <span class="pill" id="sumCount">0</span> items</span>
+          <b id="sumGrand">$0.00</b>
+        </div>
+      </div>
+
+      <p class="hint">Press <kbd>Enter</kbd> on the last item to add a new row. <kbd>Ctrl+P</kbd> to print.</p>
+    </section>
+
+    <!-- ===== RECEIPT PREVIEW ===== -->
+    <section class="panel preview-panel" id="previewPanel">
+      <div class="receipt-wrap">
+        <div class="receipt" id="receiptEl">
+          <!-- Top -->
+          <div class="r-top">
+            <div class="r-brandmark" id="rBrandmark">T</div>
+            <div class="r-store" id="rStore">Northgate Market</div>
+            <div class="r-line" id="rStreet">12 Market Street, Brooklyn, NY 11201</div>
+            <div class="r-line" id="rPhone">(718) 555-0142</div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <!-- Meta -->
+          <div class="r-meta">
+            <div class="r-meta-row">
+              <span>Cashier: <span id="rCashier">Sam Walker</span></span>
+              <span id="rDate"></span>
+            </div>
+            <div class="r-meta-row">
+              <span>Ref: <span id="rRef"></span></span>
+              <span id="rTime"></span>
+            </div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <div class="r-section-title">ORDER SUMMARY</div>
+
+          <!-- Items -->
+          <div class="r-items" id="rItems"></div>
+
+          <div class="r-divider"></div>
+
+          <!-- Totals -->
+          <div class="r-totals">
+            <div class="r-row">
+              <span>Subtotal</span>
+              <span id="rSub">$0.00</span>
+            </div>
+            <div class="r-row">
+              <span>Tax (<span id="rTaxPct">8.25%</span>)</span>
+              <span id="rTax">$0.00</span>
+            </div>
+            <div class="r-row r-grand">
+              <span>TOTAL</span>
+              <span id="rGrand">$0.00</span>
+            </div>
+            <div class="r-row r-itemsold">
+              <span>Items sold</span>
+              <span id="rCount">0</span>
+            </div>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <!-- Footer -->
+          <div class="r-footer">
+            <p>Returns accepted within 14 days with this receipt.</p>
+            <p class="r-thanks">Thanks for stopping by!</p>
+          </div>
+
+          <!-- Barcode -->
+          <div class="r-barcode"></div>
+          <div class="r-barcode-num" id="rBarcodeNum"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== HISTORY SLIDE-OUT ========== -->
+  <div class="history-overlay" id="historyOverlay"></div>
+  <aside class="history-panel" id="historyPanel">
+    <div class="history-header">
+      <h2>Receipt History</h2>
+      <button class="btn-icon" id="historyCloseBtn" title="Close">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <input type="text" class="history-search" id="historySearch" placeholder="Search receipts..." />
+    <div class="history-list" id="historyList">
+      <div class="history-empty">No saved receipts yet. Print or export a receipt to save it.</div>
+    </div>
+  </aside>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer" id="appFooter">
+    <span>Tally V2</span>
+    <span class="dot">·</span>
+    <span>Receipt Studio Pro</span>
+    <span class="dot">·</span>
+    <span>Built by Frederick Mendez</span>
+  </footer>
+
+  <!-- PDF dependencies (loaded lazily) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+  <script src="app.js"></script>
+</body>
+</html>
