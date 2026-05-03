@@ -59,6 +59,15 @@
     return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
   }
 
+  function showSuccess(btn, originalHtml) {
+    btn.classList.add('btn-success', 'animate-success');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Done';
+    setTimeout(() => {
+      btn.classList.remove('btn-success', 'animate-success');
+      btn.innerHTML = originalHtml;
+    }, 2000);
+  }
+
   /* ===== Persistence (localStorage) ===== */
   function loadSession() {
     try {
@@ -214,7 +223,8 @@
     try {
       const canvas = await html2canvas(receiptEl, { scale: 2, useCORS: true, backgroundColor: null });
       const imgData = canvas.toDataURL('image/png');
-      const { jsPDF } = window.jspdf;
+      const jsPDF = window.jspdf ? window.jspdf.jsPDF : null;
+      if (!jsPDF) throw new Error('jsPDF not loaded');
       const pw = 80; // mm width (thermal receipt)
       const ph = (canvas.height / canvas.width) * pw;
       const pdf = new jsPDF({ unit: 'mm', format: [pw, ph + 10] });
@@ -222,8 +232,9 @@
       pdf.save(`receipt-${genRef()}.pdf`);
       // Save to history
       await saveReceiptToHistory();
+      showSuccess(exportPdfBtn, '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> PDF');
     } catch (err) { console.error('PDF export failed:', err); alert('PDF export failed. Please try again.'); }
-    exportPdfBtn.disabled = false; exportPdfBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> PDF';
+    exportPdfBtn.disabled = false;
   }
 
   async function saveReceiptToHistory() {
@@ -280,7 +291,12 @@
   /* ===== Event Bindings ===== */
   Object.values(fields).forEach(el => el.addEventListener('input', render));
   addBtn.addEventListener('click', () => addItem(true));
-  printBtn.addEventListener('click', async () => { await saveReceiptToHistory(); window.print(); });
+  printBtn.addEventListener('click', async () => {
+    await saveReceiptToHistory();
+    const original = printBtn.innerHTML;
+    window.print();
+    showSuccess(printBtn, original);
+  });
   resetBtn.addEventListener('click', () => {
     if (!confirm('Reset to default sample receipt?')) return;
     fields.name.value = defaults.store.name; fields.cashier.value = defaults.store.cashier;

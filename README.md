@@ -32,6 +32,10 @@ There's a gap in the middle: people who need a clean printed receipt and nothing
 - Editable store details, cashier name, tax rate, and any number of line items
 - Receipt designed to look like real thermal-printer paper: torn edges, monospace body, dashed dividers, brand mark, barcode, reference number
 - One-click **Print**, with CSS that hides the editor so only the receipt is sent to the printer
+- **PDF Export** — generate professional PDF receipts for email or digital storage
+- **Receipt History** — persistent storage of past receipts using IndexedDB
+- **Multi-currency support** (USD, EUR, GBP, DOP, JPY, INR)
+- **Visual Templates** (Classic, Minimal, Dark Mode)
 - Auto-saves to the browser — an accidental refresh doesn't wipe the basket
 - Press <kbd>Enter</kbd> on the last item to add another row
 - A **Reset** button restores the sample data
@@ -180,12 +184,12 @@ The app boots with a sample basket. Edit anything on the left, watch the receipt
 
 ## What's next
 
-- Export receipts as **PDF** so they can be emailed to customers
-- Log every receipt to **SQLite** so a shop can pull a daily totals report
-- Multi-currency selector (USD, EUR, GBP) for cross-border use
-- A small login so multiple cashiers can share the same browser without overwriting each other
-- A `Dockerfile` so the app ships as a single `docker run` command
-- Unit tests for the totals calculation in `app.py`
+- **Cloud Sync** — sync receipts across multiple devices using a central database
+- **Barcode / QR Code Generation** — dynamic codes that link to a digital copy of the receipt
+- **Smart Analytics** — a dashboard to track daily sales, top items, and revenue trends
+- **Logo Upload** — allow businesses to upload their own logo for the receipt brandmark
+- **Mobile Companion App** — a lightweight PWA for scanning and viewing history on the go
+- **Multi-user Roles** — separate login for owners and cashiers with different permissions
 
 ---
 
