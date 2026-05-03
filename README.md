@@ -2,8 +2,6 @@
 
 > A small web app that turns a basic Python script into a receipt tool a small business could actually use.
 
-![Tally — Overview](screenshots/01-overview.jpg)
-
 ## Live Demonstration
 
 ![Tally V2 Demo](screenshots/demo.webp)
