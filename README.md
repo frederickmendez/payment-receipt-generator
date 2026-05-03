@@ -4,6 +4,10 @@
 
 ![Tally — Overview](screenshots/01-overview.jpg)
 
+## Live Demonstration
+
+![Tally V2 Demo](screenshots/demo.webp)
+
 ---
 
 ## What this is
